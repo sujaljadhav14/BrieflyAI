@@ -4,3 +4,18 @@ __pycache__/
 .env
 .venv/
 venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# Datasets
+samsum-train.csv
+samsum-validation.csv
+samsum-test.csv
+
+# Large fine-tuned model checkpoints and weights
+saved_model/
+saved_summary_model/
+results/
+result/
