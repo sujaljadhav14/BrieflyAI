@@ -10,9 +10,11 @@ class DialogueSummarizer:
     def __init__(self, model_path: str):
         logger.info(f"Initializing DialogueSummarizer with model from: {model_path}")
         
-        # Verify model files exist
-        if not os.path.exists(model_path):
-            raise FileNotFoundError(f"Model path does not exist: {model_path}")
+        # Verify if path exists locally, otherwise assume it's a Hugging Face Hub repo ID
+        if os.path.exists(model_path):
+            logger.info(f"Loading local model from directory: {model_path}")
+        else:
+            logger.info(f"Loading model from Hugging Face Hub: {model_path}")
             
         # Load tokenizer and model
         # Note: T5Tokenizer might warn about sentencepiece if not installed, we installed it.
