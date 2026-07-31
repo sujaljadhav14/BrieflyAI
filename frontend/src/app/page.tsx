@@ -107,8 +107,15 @@ export default function Home() {
       {/* TopNavBar */}
       <nav className="fixed top-0 w-full bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 z-50">
         <div className="flex justify-between items-center h-20 px-8 max-w-7xl mx-auto">
-          <div className="serif-font text-3xl font-bold text-primary tracking-tight">
-            BrieflyAI
+          <div className="flex items-center gap-3">
+            <img
+              src="/logo.svg"
+              alt="BrieflyAI Logo"
+              className="w-8 h-8 object-contain"
+            />
+            <div className="serif-font text-3xl font-bold text-primary tracking-tight">
+              BrieflyAI
+            </div>
           </div>
           <div className="hidden md:flex items-center gap-10">
             <a
