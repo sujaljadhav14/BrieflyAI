@@ -1,21 +1,38 @@
-.ipynb_checkpoints/
+# Byte-compiled / optimized / DLL files
 __pycache__/
+**/__pycache__/
 *.pyc
-.env
-.venv/
-venv/
+*.pyo
+*.pyd
 
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+**/.ipynb_checkpoints/
 *-checkpoint.ipynb
 
-# Datasets
-samsum-train.csv
-samsum-validation.csv
-samsum-test.csv
+# Environments and Secrets
+.env
+.env.*
+.venv/
+venv/
+ENV/
+env/
 
-# Large fine-tuned model checkpoints and weights
+# Datasets
+data/*.csv
+data/samsum-*.csv
+
+# Saved models and checkpoints
 saved_model/
 saved_summary_model/
 results/
 result/
+
+# Frontend dependencies and builds
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.env*.local
+ui
+DESIGN.md
