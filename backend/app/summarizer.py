@@ -46,11 +46,10 @@ class DialogueSummarizer:
     def summarize(self, dialogue: str) -> str:
         cleaned_dialogue = self.clean_data(dialogue)
         
-        # Tokenize input
+        # Tokenize input dynamically (padding=True is much faster than static 512 padding)
         inputs = self.tokenizer(
             cleaned_dialogue,
-            padding="max_length",
-            max_length=512,
+            padding=True,
             truncation=True,
             return_tensors="pt"
         )
@@ -59,14 +58,12 @@ class DialogueSummarizer:
         input_ids = inputs["input_ids"].to(self.device)
         attention_mask = inputs["attention_mask"].to(self.device)
         
-        # Generate summary (without gradients for faster inference)
+        # Generate summary (greedy decoding, max 64 tokens for lightning fast CPU inference)
         with torch.no_grad():
             outputs = self.model.generate(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
-                max_length=150,
-                num_beams=4,
-                early_stopping=True
+                max_length=64
             )
             
         # Decode and return summary
