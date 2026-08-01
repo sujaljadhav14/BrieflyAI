@@ -20,6 +20,11 @@ summarizer = None
 async def lifespan(app: FastAPI):
     # Startup
     global summarizer
+    
+    # Optimize CPU threading for PyTorch to prevent deadlocks on single-core hosting
+    torch.set_num_threads(1)
+    torch.set_num_interop_threads(1)
+    
     model_path = settings.MODEL_PATH
     
     # Check fallback path if not found (e.g. if run from root directory)
