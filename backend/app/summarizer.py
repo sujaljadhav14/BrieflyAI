@@ -16,10 +16,12 @@ class DialogueSummarizer:
         else:
             logger.info(f"Loading model from Hugging Face Hub: {model_path}")
             
-        # Load tokenizer and model
-        # Note: T5Tokenizer might warn about sentencepiece if not installed, we installed it.
+        # Load tokenizer and model with low memory footprint settings
         self.tokenizer = T5Tokenizer.from_pretrained(model_path)
-        self.model = T5ForConditionalGeneration.from_pretrained(model_path)
+        self.model = T5ForConditionalGeneration.from_pretrained(
+            model_path,
+            low_cpu_mem_usage=True
+        )
         
         # Select device (GPU / MPS / CPU)
         if torch.cuda.is_available():
