@@ -1,5 +1,6 @@
 import os
 import re
+import gc
 import logging
 import torch
 from transformers import T5Tokenizer, T5ForConditionalGeneration
@@ -16,11 +17,12 @@ class DialogueSummarizer:
         else:
             logger.info(f"Loading model from Hugging Face Hub: {model_path}")
             
-        # Load tokenizer and model with low memory footprint settings
+        # Load tokenizer and model with low memory footprint settings in bfloat16
         self.tokenizer = T5Tokenizer.from_pretrained(model_path)
         self.model = T5ForConditionalGeneration.from_pretrained(
             model_path,
-            low_cpu_mem_usage=True
+            low_cpu_mem_usage=True,
+            torch_dtype=torch.bfloat16
         )
         
         # Select device (GPU / MPS / CPU)
@@ -34,6 +36,9 @@ class DialogueSummarizer:
         logger.info(f"Moving model to device: {self.device}")
         self.model.to(self.device)
         self.model.eval()
+        
+        # Force garbage collection to free temporary loading memory
+        gc.collect()
         logger.info("Model loaded successfully and set to evaluation mode.")
 
     def clean_data(self, text: str) -> str:
@@ -59,7 +64,7 @@ class DialogueSummarizer:
         attention_mask = inputs["attention_mask"].to(self.device)
         
         # Generate summary (greedy decoding, max 64 tokens for lightning fast CPU inference)
-        with torch.no_grad():
+        with torch.inference_mode():
             outputs = self.model.generate(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
@@ -68,4 +73,11 @@ class DialogueSummarizer:
             
         # Decode and return summary
         summary = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        
+        # Explicitly delete tensors and trigger garbage collection to free RAM immediately
+        del input_ids
+        del attention_mask
+        del outputs
+        gc.collect()
+        
         return summary
